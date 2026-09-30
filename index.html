@@ -1,1 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Papu - XatSpace</title>
+    
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
 
+    <main class="space-card">
+      <!-- Portada Superior -->
+      <div class="card-cover">
+        <div class="cover-overlay"></div>
+        <div class="live-pill">
+          <span class="live-dot"></span>
+          <span>Online</span>
+        </div>
+      </div>
+
+      <!-- Contenido Principal -->
+      <div class="card-content">
+        
+        <!-- Foto en Squircle -->
+        <div class="avatar-box">
+          <img src="./PapuProfile.jpg" alt="Papu" class="avatar-squircle" />
+        </div>
+
+        <!-- Información -->
+        <div class="profile-details">
+          <div class="identity-header">
+            <h1 class="username">Papu</h1>
+<div class="badges-row">
+  <span class="country-pill">
+    <img src="/ve.png" alt="Venezuela" class="flag-mini" />
+    <span>VE</span>
+  </span>
+</div>
+          </div>
+
+          <!-- Reproductor Mini Estilo Spotify -->
+          <div class="spotify-player">
+            <div class="song-info">
+              <div class="equalizer-waves" id="equalizer">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="track-meta">
+                <p class="song-title">Mala Costumbre</p>
+                <p class="song-artist">Manuel Turizo, Wisin & Yandel</p>
+              </div>
+            </div>
+            
+            <button class="player-btn" id="playPauseBtn" aria-label="Reproducir / Pausar">
+              <i class="fa-solid fa-play" id="playIcon"></i>
+            </button>
+          </div>
+
+          <!-- Botón Destacado: Mi esposa -->
+          <div class="action-area">
+            <a href="https://forum.xat.com/profile/44473/" class="profile-btn" target="_blank" rel="noopener">
+              <i class="fa-solid fa-rocket"></i>
+              <span>Forum profile</span>
+          </a>
+        </div>
+        </div>
+
+      </div>
+
+      <!-- Créditos / Watermark -->
+      <footer class="card-footer">
+        <p>XatSpace made by <strong>Deymians</strong></p>
+      </footer>
+    </main>
+
+    <!-- Contenedor oculto del reproductor de YouTube -->
+    <div id="youtube-audio-player" style="display: none;"></div>
+
+    <!-- YouTube IFrame API & Script de Control -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+      let player;
+      let isPlaying = false;
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const playIcon = document.getElementById('playIcon');
+      const equalizer = document.getElementById('equalizer');
+
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('youtube-audio-player', {
+          height: '0',
+          width: '0',
+          videoId: 'YuJvst9tsu8',
+          playerVars: {
+            'autoplay': 1,
+            'controls': 0,
+            'loop': 1,
+            'playlist': 'YuJvst9tsu8'
+          },
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+
+      function onPlayerReady(event) {
+        event.target.playVideo();
+        
+        // Desbloqueo de audio ante restricciones de autoplay
+        const unlockAudio = () => {
+          if (player && typeof player.playVideo === 'function') {
+            player.playVideo();
+          }
+          document.removeEventListener('click', unlockAudio);
+          document.removeEventListener('touchstart', unlockAudio);
+        };
+
+        document.addEventListener('click', unlockAudio, { once: true });
+        document.addEventListener('touchstart', unlockAudio, { once: true });
+      }
+
+      function onPlayerStateChange(event) {
+        if (event.data === YT.PlayerState.PLAYING) {
+          isPlaying = true;
+          playIcon.className = 'fa-solid fa-pause';
+          equalizer.classList.add('playing');
+        } else {
+          isPlaying = false;
+          playIcon.className = 'fa-solid fa-play';
+          equalizer.classList.remove('playing');
+        }
+      }
+
+      playPauseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!player) return;
+        if (isPlaying) {
+          player.pauseVideo();
+        } else {
+          player.playVideo();
+        }
+      });
+    </script>
+
+  </body>
+</html>
